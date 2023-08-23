@@ -31,7 +31,7 @@ img_pil = Image.open("./img_p8/" + imgs[index])
 mask_pil = Image.open("./img_p8/" + masks[index])
 img_pil_bytes = open("./img_p8/" + imgs[index], 'rb')
 
-url = 'image-segmentation-test.azurewebsites.net/predict_mask'
+url = 'https://image-segmentation-test.azurewebsites.net/predict_mask'
 files = {'file': img_pil_bytes}
 response = requests.post(url, files=files)
 

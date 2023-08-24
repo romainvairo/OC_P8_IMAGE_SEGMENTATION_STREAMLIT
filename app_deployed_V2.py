@@ -31,11 +31,15 @@ img_pil = Image.open("./img_p8/" + imgs[index])
 mask_pil = Image.open("./img_p8/" + masks[index])
 img_pil_bytes = open("./img_p8/" + imgs[index], 'rb')
 
-url = 'https://image-segmentation-test.azurewebsites.net/predict_mask'
-files = {'file': img_pil_bytes}
-response = requests.post(url, files=files)
+# url = 'https://image-segmentation-test.azurewebsites.net/predict_mask'
+url = 'https://image-segmentation-test.azurewebsites.net/predict_mask/'
+# url = "http://127.0.0.1:8000/"
 
-if response.status_code == 200:
+predict_btn = st.button('Predict')
+if predict_btn:
+        files = {'file': img_pil_bytes}
+        response = requests.post(url, files=files)
+        st.write(response)
 
         # Get images to JSON format
         result = response.json()

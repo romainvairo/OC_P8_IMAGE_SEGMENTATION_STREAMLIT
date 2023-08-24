@@ -16,32 +16,40 @@ import os
 
 st.title("Application de segmentation d'image")
 
+#  Access the file in which the original images and original masks are located
 filenames = os.listdir("./img_p8")
 
-imgs = sorted([filename for filename in filenames if filename.endswith('leftImg8bit.png')])
+# Original images and original masks list sorted
+images = sorted([filename for filename in filenames if filename.endswith('leftImg8bit.png')])
 masks = sorted([filename for filename in filenames if filename.endswith('gtFine_labelIds.png')])
 
-indexes = list(range(len(imgs)))
+# Selection of index in list of original images and original masks
+indexes = list(range(len(images)))
 index = st.selectbox('Selectionnez une image:', indexes)
 
-st.write("Image :", imgs[index])
+# Name of current original image and original mask
+st.write("Image :", images[index])
 st.write("Masque : ", masks[index])
 
-img_pil = Image.open("./img_p8/" + imgs[index])
-mask_pil = Image.open("./img_p8/" + masks[index])
-img_pil_bytes = open("./img_p8/" + imgs[index], 'rb')
+# Get selected original image, original mask and predicted mask
+original_image = Image.open("./img_p8/" + images[index])
+original_mask = Image.open("./img_p8/" + masks[index])
+mask_prediction = open("./img_p8/" + images[index], 'rb')
 
-# url = 'https://image-segmentation-test.azurewebsites.net/predict_mask'
+# URL of API
 url = 'https://image-segmentation-test.azurewebsites.net/predict_mask/'
-# url = "http://127.0.0.1:8000/"
 
-predict_btn = st.button('Prediction')
-if predict_btn:
-        files = {'file': img_pil_bytes}
+# Button for prediction
+bouton_predict = st.button('Prediction')
+
+if bouton_predict:
+
+        # API response to get the predicted mask
+        files = {'file': mask_prediction}
         response = requests.post(url, files=files)
         st.write(response)
 
-        # Get images to JSON format
+        # Get mask predicted to JSON format
         result = response.json()
 
         # Get mask predicted
@@ -49,9 +57,9 @@ if predict_btn:
 
         # Decode mask on base64 and open it
         decoded_mask = base64.b64decode(predicted_mask)
-        mask_image = Image.open(BytesIO(decoded_mask))
+        mask_predicted = Image.open(BytesIO(decoded_mask))
 
-
-        st.image([img_pil, mask_pil, mask_image], caption=["Image original", "Masque réel", "Masque prédit"], width=225)
+        # Display original image, original mask and predicted mask
+        st.image([original_image, original_mask, mask_predicted], caption=["Image original", "Masque original", "Masque prédit"], width=225)
 
 # --------------------------------------------------------------------------

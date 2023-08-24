@@ -18,8 +18,8 @@ st.title("Application de segmentation d'image")
 
 filenames = os.listdir("./img_p8")
 
-imgs = [filename for filename in filenames if filename.endswith('leftImg8bit.png')]
-masks = [filename for filename in filenames if filename.endswith('gtFine_labelIds.png')]
+imgs = sorted([filename for filename in filenames if filename.endswith('leftImg8bit.png')])
+masks = sorted([filename for filename in filenames if filename.endswith('gtFine_labelIds.png')])
 
 indexes = list(range(len(imgs)))
 index = st.selectbox('Selectionnez une image:', indexes)
@@ -35,7 +35,7 @@ img_pil_bytes = open("./img_p8/" + imgs[index], 'rb')
 url = 'https://image-segmentation-test.azurewebsites.net/predict_mask/'
 # url = "http://127.0.0.1:8000/"
 
-predict_btn = st.button('Predict')
+predict_btn = st.button('Prediction')
 if predict_btn:
         files = {'file': img_pil_bytes}
         response = requests.post(url, files=files)
